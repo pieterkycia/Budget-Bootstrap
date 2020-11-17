@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+	<head>
+		<title>Budżet osobisty</title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="description" content="budżet osobisty, zarządzanie finansami" />
+		<meta name="keywords" content="budżet, finanse, wydatki, planowanie" />
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		
+		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
+		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
+	</head>	
+	<body>
+	
+		<nav class="navbar navbar-expand-md shadow-lg navbar-light">
+			<div class="container">
+				<a class="navbar-brand" href="register.html">
+					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
+				</a>
+				
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				
+				<div class="collapse navbar-collapse" id="menu">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link active" href="register.html"><b>Rejestracja</b></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="login.html"><b>Logowanie</b></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	
+		<div class="container mt-5">
+			<div class="row">
+				<div class="col-md-7 col-lg-8">
+					<div class="shadow-lg app-description p-3">
+						<h1 class="mt-4">Kilka słów o aplikacji</h1>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed sagittis ligula. Aenean fermentum quam eu fringilla vehicula. Quisque ac arcu faucibus, scelerisque felis vel, sollicitudin tellus. Morbi nulla nibh, pretium non accumsan quis, rhoncus at nisl. Vestibulum nec iaculis orci. Sed tincidunt purus in turpis iaculis, eget porttitor mi viverra. Nulla elementum elit a placerat dictum. Aliquam vehicula tellus ac neque elementum, eu ornare erat auctor. Nulla fermentum dictum metus.</p>
+					</div>
+				</div>
+				
+				<div class="col-md-5 col-lg-4 mt-3 mt-md-0">
+					<div class="shadow-lg app-description p-3">
+						<h2 class="text-center">Zarejestruj się!</h2>
+						<form action="#">
+							<div class="form-group mt-4">
+								<label for="name" class="sr-only">Name</label>
+								<input type="text" id="name" class="form-control form-control-lg" placeholder="Imię"/>
+							</div>
+							<div class="form-group">
+								<label for="email" class="sr-only">Email</label>
+								<input type="email" id="email" class="form-control form-control-lg" placeholder="E-mail"/>
+							</div>
+							<div class="form-group">
+								<label for="password" class="sr-only">Password</label>
+								<input type="password" id="password" class="form-control form-control-lg" placeholder="Hasło"/>
+							</div>
+							<div class="form-group">
+								<label for="repeat-password" class="sr-only">Password</label>
+								<input type="password" id="repeat-password" class="form-control form-control-lg" placeholder="Powtórz hasło"/>
+							</div>
+							<div class="text-center">
+								<input type="submit" class="btn btn-success" value="Zarejestruj"/>
+								<input type="reset" class="btn btn-danger" value="Wyczyść"/>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<footer class="text-center mt-5">
+		Strona wykonana przez pieterkycia@gmail.com
+		</footer>
+	
+	</body>
+</html>
