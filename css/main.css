@@ -15,9 +15,11 @@ nav {
   font-size: 20px;
 }
 
-footer {
-  background-color: #eee; 
-  color: green;
-  padding: 20px;
-  font-size: 20px;
+.navbar-toggler {
+  border: 2px solid #eee;
+}
+
+.navbar-toggler:focus {
+  outline: none;
+  border: 2px solid #bbb;
 }
