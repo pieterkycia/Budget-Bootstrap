@@ -1,3 +1,84 @@
+<?php
+session_start();
+
+if (isset($_POST['name']))
+{
+	$is_OK = true;
+	
+//**************************************************		
+	//Sprawdź poprawność imienia
+	$name = $_POST['name'];
+	if (ctype_alpha($name) == false)
+	{
+		$is_OK = false;
+		$_SESSION['e_name'] = "Imię może składać się tylko z liter!";
+	}
+	if (strlen($name) < 3)
+	{
+		$is_OK = false;
+		$_SESSION['e_name'] = "Imię musi posiadać co najmniej 3 znaki!";
+	}
+	
+//**************************************************		
+	//Sprawdź poprawność emaila
+	$email = $_POST['email'];
+	$emailB = filter_var($email, FILTER_SANITIZE_EMAIL);
+	
+	if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email))
+	{
+		$is_OK = false;
+		$_SESSION['e_email'] = "Podaj poprawny adres e-mail!";
+	}
+
+//**************************************************		
+	//Sprawdź poprawność hasła	
+	$password = $_POST['password'];
+	$password_2 = $_POST['repeat_password'];
+	if (strlen($password) < 8)
+	{
+		$is_OK = false;
+		$_SESSION['e_password'] = "Hasło musi zawierać co najmniej 8 znaków!";
+	}
+	if ($password != $password_2)
+	{
+		$is_OK = false;
+		$_SESSION['e_password'] = "Oba hasła muszą być identyczne!";
+	}
+	
+//**************************************************		
+	//Nawiązanie połączenia z bazą i pobranie emaili	
+	
+	if ($is_OK == true)
+	{
+		require_once 'database.php';
+		
+		$query = $db->query('SELECT email FROM users');
+		$users = $query->fetchAll();
+		
+		foreach($users as $emails)
+		{	
+			if ($emails['email'] == $email)
+			{
+				$is_OK = false;
+				$_SESSION['e_email'] = "Podany adres email już istnieje!";
+			}
+		}
+				
+	//Dodawanie nowego uzytkownika do bazy		
+		if ($is_OK == true)
+		{
+			$query = $db->prepare('INSERT INTO users VALUES (NULL, :name, :email, :password)');
+			$query->bindValue(':name', $name, PDO::PARAM_STR);
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->bindValue(':password', $password, PDO::PARAM_STR);
+			$query->execute();
+		}
+	}
+}
+
+
+?>
+
 <!DOCTYPE HTML>
 <html lang="pl">
 	<head>
@@ -15,6 +96,15 @@
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
+		
+		<style>
+			.error {
+			  font-size: 15px;
+			  color: red;
+			  margin-top: 10px;
+			  margin-bottom: 10px;
+			}
+		</style>
 	</head>	
 	<body>
 	
@@ -53,22 +143,43 @@
 				<div class="col-md-5 col-lg-4 mt-3 mt-md-0">
 					<div class="shadow-lg app-description pb-4">
 						<h2 class="text-center">Zarejestruj się!</h2>
-						<form action="register.html">
+						<form method="post">
 							<div class="form-group mt-4">
 								<label for="name" class="sr-only">Name</label>
-								<input type="text" id="name" class="form-control" placeholder="Imię"/>
+								<input type="text" id="name" name="name" class="form-control" placeholder="Imię"/>
 							</div>
+							<?php
+							if (isset($_SESSION['e_name']))
+							{
+								echo '<div class="error">'.$_SESSION['e_name'].'</div>';
+								unset($_SESSION['e_name']);
+							}
+							?>
 							<div class="form-group">
 								<label for="email" class="sr-only">Email</label>
-								<input type="email" id="email" class="form-control" placeholder="E-mail"/>
+								<input type="email" id="email" name="email" class="form-control" placeholder="E-mail"/>
 							</div>
+							<?php
+							if (isset($_SESSION['e_email']))
+							{
+								echo '<div class="error">'.$_SESSION['e_email'].'</div>';
+								unset($_SESSION['e_email']);
+							}
+							?>
 							<div class="form-group">
 								<label for="password" class="sr-only">Password</label>
-								<input type="password" id="password" class="form-control" placeholder="Hasło"/>
+								<input type="password" id="password" name="password" class="form-control" placeholder="Hasło"/>
 							</div>
+							<?php
+							if (isset($_SESSION['e_password']))
+							{
+								echo '<div class="error">'.$_SESSION['e_password'].'</div>';
+								unset($_SESSION['e_password']);
+							}
+							?>
 							<div class="form-group">
 								<label for="repeat-password" class="sr-only">Password</label>
-								<input type="password" id="repeat-password" class="form-control" placeholder="Powtórz hasło"/>
+								<input type="password" id="repeat_password" name="repeat_password" class="form-control" placeholder="Powtórz hasło"/>
 							</div>
 							<div class="text-center">
 								<input type="submit" class="btn btn-success" value="Zarejestruj"/>
