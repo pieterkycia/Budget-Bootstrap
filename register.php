@@ -67,11 +67,42 @@ if (isset($_POST['name']))
 	//Dodawanie nowego uzytkownika do bazy		
 		if ($is_OK == true)
 		{
-			$query = $db->prepare('INSERT INTO users VALUES (NULL, :name, :email, :password)');
+			$query = $db->prepare('INSERT INTO users VALUES (NULL, :name, :password, :email)');
 			$query->bindValue(':name', $name, PDO::PARAM_STR);
-			$query->bindValue(':email', $email, PDO::PARAM_STR);
 			$query->bindValue(':password', $password, PDO::PARAM_STR);
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
 			$query->execute();
+			
+	//Pobieranie id zarejestrowanego użytkownika		
+			$register_id_query = $db->query('SELECT id FROM users WHERE email = "'.$email.'"');
+			$register_id = $register_id_query->fetch(PDO::FETCH_ASSOC);
+	
+	//Dodawanie domyślnych kategorii przychodów
+			$incomes_query = $db->query('SELECT name FROM incomes_category_default');
+			$incomes = $incomes_query->fetchALL();
+			
+			foreach($incomes as $category)
+			{	
+				$query = $db->query('INSERT INTO incomes_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
+			}
+			
+	//Dodawanie domyślnych kategorii wydatków
+			$expenses_query = $db->query('SELECT name FROM expenses_category_default');
+			$expenses = $expenses_query->fetchALL();
+			
+			foreach($expenses as $category)
+			{	
+				$query = $db->query('INSERT INTO expenses_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
+			}
+			
+	//Dodawanie domyślnych kategorii płatności
+			$payment_query = $db->query('SELECT name FROM payment_methods_default');
+			$payment = $payment_query->fetchALL();
+			
+			foreach($payment as $category)
+			{	
+				$query = $db->query('INSERT INTO payment_methods_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
+			}
 		}
 	}
 }
