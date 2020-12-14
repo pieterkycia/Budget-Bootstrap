@@ -8,6 +8,7 @@ if (isset($_POST['name']))
 //**************************************************		
 	//Sprawdź poprawność imienia
 	$name = $_POST['name'];
+	$name = ucwords($name);
 	if (ctype_alpha($name) == false)
 	{
 		$is_OK = false;
