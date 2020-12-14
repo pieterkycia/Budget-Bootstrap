@@ -1,5 +1,5 @@
 <?php
 	session_start();
-	session_unset();
-	header('Location: login.php');
+	unset($_SESSION['user_id']);
+	header('Location: register.php');
 ?>

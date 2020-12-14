@@ -148,7 +148,7 @@ if (isset($_POST['name']))
 	
 		<nav class="navbar navbar-expand-sm sticky-top shadow-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand" href="register.html">
+				<a class="navbar-brand" href="register.php">
 					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
 				</a>
 				

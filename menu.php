@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id']))
+{
+	header('Location: register.php');
+	exit();
+}
+
+
+?>
+
+
+
 <!DOCTYPE HTML>
 <html lang="pl">
 	<head>
@@ -20,7 +34,7 @@
 	
 		<nav class="navbar navbar-expand-lg sticky-top shadow-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand" href="menu.html">
+				<a class="navbar-brand" href="menu.php">
 					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
 				</a>
 				

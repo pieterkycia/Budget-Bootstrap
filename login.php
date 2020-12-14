@@ -63,7 +63,7 @@ if (isset($_POST['email']))
 	
 		<nav class="navbar navbar-expand-sm sticky-top shadow-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand" href="register.html">
+				<a class="navbar-brand" href="register.php">
 					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
 				</a>
 				
@@ -101,7 +101,7 @@ if (isset($_POST['email']))
 							<?php
 							if (isset($_SESSION['e_login']))
 							{
-								echo '<div class="error ml-2">'.$_SESSION['e_login'].'</div>';
+								echo '<div class="error">'.$_SESSION['e_login'].'</div>';
 								unset ($_SESSION['e_login']);
 							}
 							?>
