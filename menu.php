@@ -45,7 +45,7 @@
 					</ul>	
 					<ul class="navbar-nav ml-auto">	
 						<li class="nav-item pl-2 pl-lg-0">
-							<a class="nav-link" href="register.html"><b>Wyloguj się</b></a>
+							<a class="nav-link" href="logout.php"><b>Wyloguj się</b></a>
 						</li>
 					</ul>
 				</div>

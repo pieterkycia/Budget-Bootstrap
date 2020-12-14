@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+if (isset($_SESSION['user_id']))
+{
+	header ('Location: menu.php');
+	exit();
+}
+
 if (isset($_POST['name']))
 {
 	$is_OK = true;
@@ -153,10 +159,10 @@ if (isset($_POST['name']))
 				<div class="collapse navbar-collapse" id="menu">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
-							<a class="nav-link active" href="register.html"><b>Rejestracja</b></a>
+							<a class="nav-link active" href="register.php"><b>Rejestracja</b></a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="login.html"><b>Logowanie</b></a>
+							<a class="nav-link" href="login.php"><b>Logowanie</b></a>
 						</li>
 					</ul>
 				</div>
@@ -218,7 +224,7 @@ if (isset($_POST['name']))
 								<input type="reset" class="btn btn-danger" value="Wyczyść"/>
 							</div>
 							<div class="text-center">
-								<a href="login.html" class="btn btn-primary mt-3 px-5">Logowanie</a>
+								<a href="login.php" class="btn btn-primary mt-3 px-5">Logowanie</a>
 							</div>
 						</form>
 					</div>
