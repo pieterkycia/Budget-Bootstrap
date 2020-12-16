@@ -64,7 +64,7 @@ if (isset($_POST['amount']))
 	}
 
 //**************************************************	
-	//Sprawdzanie radioboxa
+	//Sprawdzanie radioboxa kategorii przychodów
 	if (!isset($_POST['category']))
 	{
 		$is_OK = false;
@@ -75,13 +75,13 @@ if (isset($_POST['amount']))
 	//Dodawanie przychodu do bazy
 	if ($is_OK == true)
 	{
-		$query = $db->prepare('INSERT INTO incomes VALUES (NULL, '.$_SESSION['user_id'].', "'.$_POST['category'].'", "'.$_POST['amount'].'", "'.$_POST['date'].'", "'.$_POST['comment'].'")');
+		$query = $db->prepare('INSERT INTO incomes VALUES (NULL, :id, :category, :amount, :date, :comment)');
 		
 		$query->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
 		$query->bindValue(':category', $_POST['category'], PDO::PARAM_STR);
 		$query->bindValue(':amount', $_POST['amount'], PDO::PARAM_STR);
 		$query->bindValue(':date', $_POST['date'], PDO::PARAM_STR);
-		$query->bindValue(':id', $_POST['comment'], PDO::PARAM_STR);
+		$query->bindValue(':comment', $_POST['comment'], PDO::PARAM_STR);
 		
 		$query->execute();
 		
@@ -156,9 +156,7 @@ if (isset($_POST['amount']))
 		<div class="container-fluid text-center my-2 p-2 bg-light" style="visibility:
 		<?php
 		if (isset($add_info))
-		{
 			echo 'visible';
-		}
 		else
 			echo 'hidden';
 		?>
@@ -181,8 +179,7 @@ if (isset($_POST['amount']))
 						<?php
 						if (isset($e_amount))
 						{
-							echo '<div class="error ml-5 pl-5">'.$e_amount.'</div>';
-							unset($e_amount);	
+							echo '<div class="error ml-5 pl-5">'.$e_amount.'</div>';	
 						}
 						?>
 						<div class="row pl-3 mt-3">
@@ -197,7 +194,6 @@ if (isset($_POST['amount']))
 						if (isset($e_date))
 						{
 							echo '<div class="error ml-5 pl-5">'.$e_date.'</div>';
-							unset($e_date);	
 						}
 						?>		
 						<div class="px-3 mt-3">
@@ -211,7 +207,6 @@ if (isset($_POST['amount']))
 								if (isset($e_category))
 								{
 									echo '<div class="error">'.$e_category.'</div>';
-									unset($e_category);	
 								}
 								?>	
 								<div class="mt-3"><label for="comment">Komentarz (opcjonalnie):</label></div> 
