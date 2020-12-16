@@ -1,3 +1,108 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id']))
+{
+	header('Location: register.php');
+	exit();
+}
+else
+{
+	require_once 'database.php';
+
+//**************************************************	
+	//Pobranie wszystkich kategorii płatności
+	$query = $db->query('SELECT id, name FROM payment_methods_assigned_to_users WHERE user_id = "'.$_SESSION['user_id'].'"');
+	$payment_method = $query->fetchALL();
+	
+//**************************************************	
+	//Pobranie wszystkich kategorii wydatków
+	$query = $db->query('SELECT id, name FROM expenses_category_assigned_to_users WHERE user_id = "'.$_SESSION['user_id'].'"');
+	$categories = $query->fetchALL();
+}	
+	
+if (isset($_POST['amount']))
+{
+	$is_OK = true;
+
+//**************************************************	
+	//Sprawdzanie kwoty
+	$amount = $_POST['amount'];
+	if ($amount != '')
+	{
+		if ((is_numeric($amount)) == false)
+		{
+			$is_OK = false;
+			$e_amount = "To nie jest liczba!";
+		}
+		else
+		{
+			$decimal_part = ($amount - floor($amount)) * 100;
+			if (strlen($decimal_part) > 2)
+			{
+				$is_OK = false;
+				$e_amount = "Niepoprawna wartość!";
+			}
+		}
+	}
+
+//**************************************************	
+	//Sprawdzanie daty
+	$income_date = $_POST['date'];
+	if (preg_match('/^[1-9]{1}[0-9]{3}-[0-9]{1,2}-[0-9]{1,2}$/', $income_date))
+	{
+		$full_date = explode('-', $income_date);
+		$year = $full_date[0];
+		$month = $full_date[1];
+		$day = $full_date[2];
+		
+		if (!checkdate($month, $day, $year))
+		{
+			$is_OK = false;
+			$e_date = "Niepoprawna data!";
+		}
+	}
+	else
+	{
+		$is_OK = false;
+		$e_date = "Niepoprawny format (YYYY-MM-DD)!";
+	}
+	
+//**************************************************	
+	//Sprawdzanie radioboxa metod płatności
+	if (!isset($_POST['payment']))
+	{
+		$is_OK = false;
+		$e_payment = "Wybierz jedną z opcji!";
+	}
+	
+//**************************************************	
+	//Sprawdzanie radioboxa kategorii wydatków
+	if (!isset($_POST['category']))
+	{
+		$is_OK = false;
+		$e_category = "Wybierz jedną z opcji!";
+	}
+
+//**************************************************	
+	//Dodawanie przychodu do bazy
+	if ($is_OK == true)
+	{
+		$query = $db->prepare('INSERT INTO expenses VALUES (NULL, :id, :category, :payment, :amount, :date, :comment)');
+		
+		$query->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+		$query->bindValue(':category', $_POST['category'], PDO::PARAM_STR);
+		$query->bindValue(':payment', $_POST['payment'], PDO::PARAM_STR);
+		$query->bindValue(':amount', $_POST['amount'], PDO::PARAM_STR);
+		$query->bindValue(':date', $_POST['date'], PDO::PARAM_STR);
+		$query->bindValue(':comment', $_POST['comment'], PDO::PARAM_STR);
+		
+		$query->execute();
+		
+		$add_info = true;
+	}
+}
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 	<head>
@@ -15,6 +120,15 @@
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
+		
+		<style>
+		.error {
+		  font-size: 15px;
+		  color: red;
+		  margin-top: 10px;
+		  margin-bottom: 10px;
+		}
+		</style>
 	</head>	
 	<body>
 	
@@ -31,92 +145,101 @@
 				<div class="collapse navbar-collapse" id="menu">
 					<ul class="navbar-nav pl-lg-5">
 						<li class="nav-item px-2">
-							<a class="nav-link" href="incomes.html"><b>Dodaj przychód</b></a>
+							<a class="nav-link" href="incomes.php"><b>Dodaj przychód</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link active" href="expenses.html"><b>Dodaj wydatek</b></a>
+							<a class="nav-link active" href="expenses.php"><b>Dodaj wydatek</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="balance.html"><b>Przeglądaj bilans</b></a>
+							<a class="nav-link" href="balance.php"><b>Przeglądaj bilans</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="settings.html"><b>Ustawienia</b></a>
+							<a class="nav-link" href="settings.php"><b>Ustawienia</b></a>
 						</li>
 					</ul>	
 					<ul class="navbar-nav ml-auto">	
 						<li class="nav-item pl-2 pl-lg-0">
-							<a class="nav-link" href="register.html"><b>Wyloguj się</b></a>
+							<a class="nav-link" href="logout.php"><b>Wyloguj się</b></a>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</nav>
 	
-		<div class="container mt-5">
+		<div class="container-fluid text-center my-2 p-2 bg-light" style="visibility:
+		<?php
+		if (isset($add_info))
+			echo 'visible';
+		else
+			echo 'hidden';
+		?>
+		;">Dodano nowy wydatek!</div>
+	
+		<div class="container">
 			<div class="col-md-10 mx-auto">
 				<div class="shadow-lg app-description p-3">
 					<h2 class="pl-3">Dodawanie wydatku</h2>
-					<form action="menu.html">
+					<form method="post">
 	
 						<div class="row pl-3 mt-3">
 							<div class="pl-3">
 								<label for="amount">Kwota:</label>
 							</div>
 							<div class="col-8 col-lg-5">
-								<input type="number" id="amount" class="form-control" step="0.01"/>
+								<input type="number" id="amount" name="amount" class="form-control" step="0.01"/>
 							</div>
 						</div>
-							
+						<?php
+						if (isset($e_amount))
+						{
+							echo '<div class="error ml-5 pl-5">'.$e_amount.'</div>';	
+						}
+						?>	
 						<div class="row pl-3 mt-3">
 							<div class="pl-3">
 								<label for="date">Data:</label>
 							</div>	
 							<div class="col-8 col-lg-5">
-								<input type="date" id="date" class="form-control"/>
+								<input type="date" id="date" name="date" class="form-control"/>
 							</div>
 						</div>
-						
+						<?php
+						if (isset($e_date))
+						{
+							echo '<div class="error ml-5 pl-5">'.$e_date.'</div>';
+						}
+						?>	
 						<div class="px-3 mt-3">
 							<fieldset class="col shadow-xl rounded-xl">
 								<legend class="w-auto p-2"> Sposób płatności </legend>
-								<div class="row mb-3">
-									<div class="col-xl-3"><label><input type="radio" name="payment"/> Gotówka</label></div>
-									<div class="col-xl-4"><label><input type="radio" name="payment"/> Karta debetowa</label></div>
-									<div class="col-xl-3"><label><input type="radio" name="payment"/> Karta kredytowa</label></div>
-								</div>
+								<?php
+								foreach ($payment_method as $payment)
+								{	
+									echo '<div><label><input type="radio" name="payment" value="'.$payment['id'].'"/> '.$payment['name'].'</label></div>';	
+								}
+								if (isset($e_payment))
+								{
+									echo '<div class="error">'.$e_payment.'</div>';
+								}
+								?>
 							</fieldset>
 						</div>
 						
 						<div class="px-3 mt-3">
 							<fieldset class="col shadow-xl rounded-xl">
 								<legend class="w-auto p-2"> Kategoria </legend>
-								<div class="row">
-									<div class="col-lg-4">
-										<div><label><input type="radio" name="category"/> Jedzenie</label></div>
-										<div><label><input type="radio" name="category"/> Mieszkanie</label></div>
-										<div><label><input type="radio" name="category"/> Transport</label></div>
-										<div><label><input type="radio" name="category"/> Telekomunikacja</label></div>
-										<div><label><input type="radio" name="category"/> Opieka zdrowotna</label></div>
-										<div><label><input type="radio" name="category"/> Ubranie</label></div>
-										<div><label><input type="radio" name="category"/> Higiena</label></div>
-										<div><label><input type="radio" name="category"/> Dzieci</label></div>	
-									</div>
-									<div class="col-lg-4">
-										<div><label><input type="radio" name="category"/> Rozrywka</label></div>
-										<div><label><input type="radio" name="category"/> Wycieczka</label></div>
-										<div><label><input type="radio" name="category"/> Szkolenia</label></div>
-										<div><label><input type="radio" name="category"/> Książki</label></div>
-										<div><label><input type="radio" name="category"/> Oszczędności</label></div>
-										<div><label><input type="radio" name="category"/> Na emeryturę</label></div>
-										<div><label><input type="radio" name="category"/> Spłata długów</label></div>
-										<div><label><input type="radio" name="category"/> Darowizna</label></div>
-									</div>
-									<div class="col-lg-4">
-										<div><label><input type="radio" name="category"/> Inne wydatki</label></div>
-									</div>
-								</div>
+								<?php
+								foreach ($categories as $category)
+								{	
+									echo '<div><label><input type="radio" name="category" value="'.$category['id'].'"/> '.$category['name'].'</label></div>';	
+								}
+								if (isset($e_category))
+								{
+									echo '<div class="error">'.$e_category.'</div>';
+								}
+								?>
 								<div class="mt-3"><label for="comment">Komentarz (opcjonalnie):</label></div> 
-								<textarea class="form-control col-lg-11 rounded-xl mb-3" id="comment" rows="5"></textarea>
+								<textarea class="form-control col-lg-11 rounded-xl mb-3" id="comment" name="comment" rows="5"></textarea>
 							</fieldset>
 						</div>
 						
