@@ -45,3 +45,10 @@ fieldset {
 #comment {
   resize: none;
 }
+
+.error {
+  font-size: 15px;
+  color: red;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

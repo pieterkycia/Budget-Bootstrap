@@ -18,12 +18,12 @@ if (isset($_POST['name']))
 	if (ctype_alpha($name) == false)
 	{
 		$is_OK = false;
-		$_SESSION['e_name'] = "Imię może składać się tylko z liter!";
+		$e_name = "Imię może składać się tylko z liter!";
 	}
 	if (strlen($name) < 3)
 	{
 		$is_OK = false;
-		$_SESSION['e_name'] = "Imię musi posiadać co najmniej 3 znaki!";
+		$e_name = "Imię musi posiadać co najmniej 3 znaki!";
 	}
 	
 //**************************************************		
@@ -34,7 +34,7 @@ if (isset($_POST['name']))
 	if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email))
 	{
 		$is_OK = false;
-		$_SESSION['e_email'] = "Podaj poprawny adres e-mail!";
+		$e_email = "Podaj poprawny adres e-mail!";
 	}
 
 //**************************************************		
@@ -44,17 +44,16 @@ if (isset($_POST['name']))
 	if (strlen($password) < 8)
 	{
 		$is_OK = false;
-		$_SESSION['e_password'] = "Hasło musi zawierać co najmniej 8 znaków!";
+		$e_password = "Hasło musi zawierać co najmniej 8 znaków!";
 	}
 	if ($password != $password_2)
 	{
 		$is_OK = false;
-		$_SESSION['e_password'] = "Oba hasła muszą być identyczne!";
+		$e_password = "Oba hasła muszą być identyczne!";
 	}
 	
 //**************************************************		
 	//Nawiązanie połączenia z bazą i pobranie emaili	
-	
 	if ($is_OK == true)
 	{
 		require_once 'database.php';
@@ -67,10 +66,11 @@ if (isset($_POST['name']))
 			if ($emails['email'] == $email)
 			{
 				$is_OK = false;
-				$_SESSION['e_email'] = "Podany adres email już istnieje!";
+				$e_email = "Podany adres email już istnieje!";
 			}
 		}
-				
+		
+//**************************************************				
 	//Dodawanie nowego uzytkownika do bazy		
 		if ($is_OK == true)
 		{
@@ -80,10 +80,12 @@ if (isset($_POST['name']))
 			$query->bindValue(':email', $email, PDO::PARAM_STR);
 			$query->execute();
 			
+//**************************************************				
 	//Pobieranie id zarejestrowanego użytkownika		
 			$register_id_query = $db->query('SELECT id FROM users WHERE email = "'.$email.'"');
 			$register_id = $register_id_query->fetch(PDO::FETCH_ASSOC);
-	
+
+//**************************************************		
 	//Dodawanie domyślnych kategorii przychodów
 			$incomes_query = $db->query('SELECT name FROM incomes_category_default');
 			$incomes = $incomes_query->fetchALL();
@@ -92,7 +94,8 @@ if (isset($_POST['name']))
 			{	
 				$query = $db->query('INSERT INTO incomes_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
 			}
-			
+
+//**************************************************				
 	//Dodawanie domyślnych kategorii wydatków
 			$expenses_query = $db->query('SELECT name FROM expenses_category_default');
 			$expenses = $expenses_query->fetchALL();
@@ -101,7 +104,8 @@ if (isset($_POST['name']))
 			{	
 				$query = $db->query('INSERT INTO expenses_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
 			}
-			
+
+//**************************************************				
 	//Dodawanie domyślnych kategorii płatności
 			$payment_query = $db->query('SELECT name FROM payment_methods_default');
 			$payment = $payment_query->fetchALL();
@@ -113,8 +117,6 @@ if (isset($_POST['name']))
 		}
 	}
 }
-
-
 ?>
 
 <!DOCTYPE HTML>
@@ -136,12 +138,12 @@ if (isset($_POST['name']))
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
 		<style>
-			.error {
-			  font-size: 15px;
-			  color: red;
-			  margin-top: 10px;
-			  margin-bottom: 10px;
-			}
+		.error {
+		  font-size: 15px;
+		  color: red;
+		  margin-top: 10px;
+		  margin-bottom: 10px;
+		}
 		</style>
 	</head>	
 	<body>
@@ -187,10 +189,9 @@ if (isset($_POST['name']))
 								<input type="text" id="name" name="name" class="form-control" placeholder="Imię"/>
 							</div>
 							<?php
-							if (isset($_SESSION['e_name']))
+							if (isset($e_name))
 							{
-								echo '<div class="error">'.$_SESSION['e_name'].'</div>';
-								unset($_SESSION['e_name']);
+								echo '<div class="error">'.$e_name.'</div>';
 							}
 							?>
 							<div class="form-group">
@@ -198,10 +199,9 @@ if (isset($_POST['name']))
 								<input type="email" id="email" name="email" class="form-control" placeholder="E-mail"/>
 							</div>
 							<?php
-							if (isset($_SESSION['e_email']))
+							if (isset($e_email))
 							{
-								echo '<div class="error">'.$_SESSION['e_email'].'</div>';
-								unset($_SESSION['e_email']);
+								echo '<div class="error">'.$e_email.'</div>';
 							}
 							?>
 							<div class="form-group">
@@ -209,10 +209,9 @@ if (isset($_POST['name']))
 								<input type="password" id="password" name="password" class="form-control" placeholder="Hasło"/>
 							</div>
 							<?php
-							if (isset($_SESSION['e_password']))
+							if (isset($e_password))
 							{
-								echo '<div class="error">'.$_SESSION['e_password'].'</div>';
-								unset($_SESSION['e_password']);
+								echo '<div class="error">'.$e_password.'</div>';
 							}
 							?>
 							<div class="form-group">

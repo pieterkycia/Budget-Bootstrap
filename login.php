@@ -13,11 +13,14 @@ if (isset($_POST['email']))
 	$password = $_POST['password'];
 	
 	require_once 'database.php';
-	
+
+//**************************************************		
 	//Pobieranie danych z bazy do weryfikacji
 	$query = $db->query('SELECT id, email, password FROM users');
 	$users = $query->fetchALL();
 	
+//**************************************************	
+	//Weryfikacja danych
 	foreach ($users as $user)
 	{
 		if (($user['email'] == $email) && ($user['password'] == $password))
@@ -27,7 +30,7 @@ if (isset($_POST['email']))
 			exit();
 		}
 	}
-	$_SESSION['e_login'] = "Niepoprawny email lub hasło!";
+	$e_login = "Niepoprawny email lub hasło!";
 }
 ?>
 
@@ -51,12 +54,12 @@ if (isset($_POST['email']))
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
 		<style>
-			.error {
-			  font-size: 15px;
-			  color: red;
-			  margin-top: 10px;
-			  margin-bottom: 10px;
-			}
+		.error {
+		  font-size: 15px;
+		  color: red;
+		  margin-top: 10px;
+		  margin-bottom: 10px;
+		}
 		</style>
 	</head>	
 	<body>
@@ -99,10 +102,9 @@ if (isset($_POST['email']))
 								<input type="password" id="password" name="password" class="form-control" placeholder="Hasło"/>
 							</div>
 							<?php
-							if (isset($_SESSION['e_login']))
+							if (isset($e_login))
 							{
-								echo '<div class="error">'.$_SESSION['e_login'].'</div>';
-								unset ($_SESSION['e_login']);
+								echo '<div class="error">'.$e_login.'</div>';
 							}
 							?>
 							<div class="text-center mt-4">
