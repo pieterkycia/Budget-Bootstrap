@@ -9,8 +9,9 @@ if (!isset($_SESSION['user_id']))
 else
 {
 	require_once 'database.php';
-	
-//Pobranie wszystkich kategorii przychodów
+
+//**************************************************	
+	//Pobranie wszystkich kategorii przychodów
 	$query = $db->query('SELECT id, name FROM incomes_category_assigned_to_users WHERE user_id = "'.$_SESSION['user_id'].'"');
 	$categories = $query->fetchALL();
 }
@@ -18,7 +19,8 @@ else
 if (isset($_POST['amount']))
 {
 	$is_OK = true;
-	
+
+//**************************************************	
 	//Sprawdzanie kwoty
 	$amount = $_POST['amount'];
 	if ($amount != '')
@@ -38,7 +40,8 @@ if (isset($_POST['amount']))
 			}
 		}
 	}
-	
+
+//**************************************************	
 	//Sprawdzanie daty
 	$income_date = $_POST['date'];
 	if (preg_match('/^[1-9]{1}[0-9]{3}-[0-9]{1,2}-[0-9]{1,2}$/', $income_date))
@@ -59,18 +62,19 @@ if (isset($_POST['amount']))
 		$is_OK = false;
 		$e_date = "Niepoprawny format (YYYY-MM-DD)!";
 	}
-	
+
+//**************************************************	
 	//Sprawdzanie radioboxa
 	if (!isset($_POST['category']))
 	{
 		$is_OK = false;
 		$e_category = "Wybierz jedną z opcji!";
 	}
-	
+
+//**************************************************	
 	//Dodawanie przychodu do bazy
 	if ($is_OK == true)
 	{
-		echo "POSZŁO do BAZY!";
 		$query = $db->prepare('INSERT INTO incomes VALUES (NULL, '.$_SESSION['user_id'].', "'.$_POST['category'].'", "'.$_POST['amount'].'", "'.$_POST['date'].'", "'.$_POST['comment'].'")');
 		
 		$query->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
@@ -80,6 +84,8 @@ if (isset($_POST['amount']))
 		$query->bindValue(':id', $_POST['comment'], PDO::PARAM_STR);
 		
 		$query->execute();
+		
+		$add_info = true;
 	}
 }
 ?>
@@ -146,8 +152,19 @@ if (isset($_POST['amount']))
 				</div>
 			</div>
 		</nav>
-	
-		<div class="container mt-5">
+
+		<div class="container-fluid text-center my-2 p-2 bg-light" style="visibility:
+		<?php
+		if (isset($add_info))
+		{
+			echo 'visible';
+		}
+		else
+			echo 'hidden';
+		?>
+		;">Dodano nowy przychód!</div>
+		
+		<div class="container">
 			<div class="col-md-10 mx-auto">
 				<div class="shadow-lg app-description p-3">
 					<h2 class="pl-3">Dodawanie przychodu</h2>
