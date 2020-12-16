@@ -6,8 +6,6 @@ if (!isset($_SESSION['user_id']))
 	header('Location: register.php');
 	exit();
 }
-
-
 ?>
 
 
@@ -45,16 +43,16 @@ if (!isset($_SESSION['user_id']))
 				<div class="collapse navbar-collapse" id="menu">
 					<ul class="navbar-nav pl-lg-5">
 						<li class="nav-item px-2">
-							<a class="nav-link" href="incomes.html"><b>Dodaj przychód</b></a>
+							<a class="nav-link" href="incomes.php"><b>Dodaj przychód</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="expenses.html"><b>Dodaj wydatek</b></a>
+							<a class="nav-link" href="expenses.php"><b>Dodaj wydatek</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="balance.html"><b>Przeglądaj bilans</b></a>
+							<a class="nav-link" href="balance.php"><b>Przeglądaj bilans</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="settings.html"><b>Ustawienia</b></a>
+							<a class="nav-link" href="settings.php"><b>Ustawienia</b></a>
 						</li>
 					</ul>	
 					<ul class="navbar-nav ml-auto">	

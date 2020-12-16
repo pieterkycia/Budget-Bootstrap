@@ -13,11 +13,14 @@ if (isset($_POST['email']))
 	$password = $_POST['password'];
 	
 	require_once 'database.php';
-	
+
+//**************************************************		
 	//Pobieranie danych z bazy do weryfikacji
 	$query = $db->query('SELECT id, email, password FROM users');
 	$users = $query->fetchALL();
 	
+//**************************************************	
+	//Weryfikacja danych
 	foreach ($users as $user)
 	{
 		if (($user['email'] == $email) && ($user['password'] == $password))
@@ -50,14 +53,6 @@ if (isset($_POST['email']))
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
-		<style>
-			.error {
-			  font-size: 15px;
-			  color: red;
-			  margin-top: 10px;
-			  margin-bottom: 10px;
-			}
-		</style>
 	</head>	
 	<body>
 	
