@@ -145,62 +145,26 @@ if (!isset($_SESSION['user_id']))
 				</div>
 			</div>
 		</div>
-		
+		<script src="function.js" type="text/javascript"></script>
 		<script>
-		var dateOption = $('#checkDate').val();
 		var date = new Date();
-		var date1 = date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
-		var date2 = date.getFullYear() + "-" + (date.getMonth() + 1) + "-31";
-		$.post("incomes_balance_response.php", {date1: date1, date2: date2}, function(data){
-			$("#incomes").html(data);});
-		$.post("expenses_balance_response.php", {date1: date1, date2: date2},function(data){
-			$("#expenses").html(data);
-		});
+		
+		showBalance(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
 		
 		$('#checkDate').change(function() {
-			dateOption = $(this).val();
+			var dateOption = $(this).val();
 			switch(dateOption)
 			{
 				case '1': 
-				
-					var date1 = date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
-					var date2 = date.getFullYear() + "-" + (date.getMonth() + 1) + "-31";
-					$.post("incomes_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#incomes").html(data);
-					});	
-					$.post("expenses_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#expenses").html(data);
-					});
+					showBalance(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
 					break;
 					
 				case '2': 
-					if (date.getMonth() == 0)
-					{
-						var date1 = (date.getFullYear() - 1) + "-12-01";
-						var date2 = (date.getFullYear() - 1) + "-12-31";
-					}
-					else
-					{
-						var date1 = date.getFullYear() + "-" + date.getMonth() + "-01";
-						var date2 = date.getFullYear() + "-" + date.getMonth() + "-31";
-					}
-					$.post("incomes_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#incomes").html(data);
-					});	
-					$.post("expenses_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#expenses").html(data);
-					});
+					showBalance(firstDayOfPreviousMonth(date), lastDayOfPreviousMonth(date));
 					break;
 					
 				case '3': 
-					var date1 = date.getFullYear() + "-01-01";
-					var date2 = date.getFullYear() + "-12-31";
-					$.post("incomes_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#incomes").html(data);
-					});	
-					$.post("expenses_balance_response.php", {date1: date1, date2: date2},function(data){
-						$("#expenses").html(data);
-					});
+					showBalance(firstDayOfCurrentYear(date), lastDayOfCurrentYear(date));
 					break;
 					
 				case '4':
@@ -208,11 +172,11 @@ if (!isset($_SESSION['user_id']))
 					$('#btn-show-balance').click(function() {
 						var date1 = $('#date1').val();
 						var date2 = $('#date2').val();
+						
 						var checkDateFunction = true;
 						if (checkDateFunction == true)
 						{
-							$.post("incomes_balance_response.php", {date1: date1, date2: date2}, function(data){$("#incomes").html(data);});
-							$.post("expenses_balance_response.php", {date1: date1, date2: date2}, function(data){$("#expenses").html(data);});
+							showBalance(date1, date2);
 							$('#myModal').modal("hide");
 						}
 						else

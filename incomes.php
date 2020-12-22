@@ -10,18 +10,21 @@ else
 {
 	require_once 'database.php';
 
-//**************************************************	
-	//Pobranie wszystkich kategorii przychodów
-	$query = $db->query('SELECT id, name FROM incomes_category_assigned_to_users WHERE user_id = "'.$_SESSION['user_id'].'"');
+//**********Pobranie wszystkich kategorii przychodów**********
+	$query = $db->query('SELECT id, name 
+	FROM incomes_category_assigned_to_users 
+	WHERE user_id = "'.$_SESSION['user_id'].'"');
+	
 	$categories = $query->fetchALL();
 }
 
 if (isset($_POST['amount']))
 {
+	require_once 'function.php';
 	$is_OK = true;
 
-//**************************************************	
-	//Sprawdzanie kwoty
+//**********Sprawdzanie kwoty**********
+	
 	$amount = $_POST['amount'];
 	if ($amount != '')
 	{
@@ -32,8 +35,7 @@ if (isset($_POST['amount']))
 		}
 		else
 		{
-			$decimal_part = ($amount - floor($amount)) * 100;
-			if (strlen($decimal_part) > 2)
+			if (!check_decimal_part($amount))
 			{
 				$is_OK = false;
 				$e_amount = "Niepoprawna wartość!";
@@ -41,10 +43,9 @@ if (isset($_POST['amount']))
 		}
 	}
 
-//**************************************************	
-	//Sprawdzanie daty
+//**********Sprawdzanie daty**********
 	$income_date = $_POST['date'];
-	if (preg_match('/^[1-9]{1}[0-9]{3}-[0-9]{1,2}-[0-9]{1,2}$/', $income_date))
+	if (check_date_format($income_date))
 	{
 		$full_date = explode('-', $income_date);
 		$year = $full_date[0];
@@ -60,29 +61,27 @@ if (isset($_POST['amount']))
 	else
 	{
 		$is_OK = false;
-		$e_date = "Niepoprawny format (YYYY-MM-DD)!";
+		$e_date = "Niepoprawny format (yyyy-mm-dd)!";
 	}
 
-//**************************************************	
-	//Sprawdzanie radioboxa kategorii przychodów
+//**********Sprawdzanie radioboxa kategorii przychodów**********
 	if (!isset($_POST['category']))
 	{
 		$is_OK = false;
 		$e_category = "Wybierz jedną z opcji!";
 	}
 
-//**************************************************	
-	//Dodawanie przychodu do bazy
+//**********Dodawanie przychodu do bazy**********
 	if ($is_OK == true)
 	{
-		$query = $db->prepare('INSERT INTO incomes VALUES (NULL, :id, :category, :amount, :date, :comment)');
+		$query = $db->prepare('INSERT INTO incomes 
+		VALUES (NULL, :id, :category, :amount, :date, :comment)');
 		
 		$query->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
 		$query->bindValue(':category', $_POST['category'], PDO::PARAM_STR);
 		$query->bindValue(':amount', $_POST['amount'], PDO::PARAM_STR);
 		$query->bindValue(':date', $_POST['date'], PDO::PARAM_STR);
 		$query->bindValue(':comment', $_POST['comment'], PDO::PARAM_STR);
-		
 		$query->execute();
 		
 		$add_info = true;
