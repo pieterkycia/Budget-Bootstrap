@@ -1,13 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
-}
-else
-{
+} else {
 	require_once 'database.php';
 
 //**********Pobranie wszystkich kategorii przychodów**********
@@ -18,25 +15,19 @@ else
 	$categories = $query->fetchALL();
 }
 
-if (isset($_POST['amount']))
-{
-	require_once 'function.php';
+if (isset($_POST['amount'])) {
+	require_once 'auxiliaryFunctions.php';
 	$is_OK = true;
 
 //**********Sprawdzanie kwoty**********
 	
 	$amount = $_POST['amount'];
-	if ($amount != '')
-	{
-		if ((is_numeric($amount)) == false)
-		{
+	if ($amount != '') {
+		if ((is_numeric($amount)) == false) {
 			$is_OK = false;
 			$e_amount = "To nie jest liczba!";
-		}
-		else
-		{
-			if (!check_decimal_part($amount))
-			{
+		} else {
+			if (!check_decimal_part($amount)) {
 				$is_OK = false;
 				$e_amount = "Niepoprawna wartość!";
 			}
@@ -45,35 +36,29 @@ if (isset($_POST['amount']))
 
 //**********Sprawdzanie daty**********
 	$income_date = $_POST['date'];
-	if (check_date_format($income_date))
-	{
+	if (check_date_format($income_date)) {
 		$full_date = explode('-', $income_date);
 		$year = $full_date[0];
 		$month = $full_date[1];
 		$day = $full_date[2];
 		
-		if (!checkdate($month, $day, $year))
-		{
+		if (!checkdate($month, $day, $year)) {
 			$is_OK = false;
 			$e_date = "Niepoprawna data!";
 		}
-	}
-	else
-	{
+	} else {
 		$is_OK = false;
 		$e_date = "Niepoprawny format (yyyy-mm-dd)!";
 	}
 
 //**********Sprawdzanie radioboxa kategorii przychodów**********
-	if (!isset($_POST['category']))
-	{
+	if (!isset($_POST['category'])) {
 		$is_OK = false;
 		$e_category = "Wybierz jedną z opcji!";
 	}
 
 //**********Dodawanie przychodu do bazy**********
-	if ($is_OK == true)
-	{
+	if ($is_OK == true) {
 		$query = $db->prepare('INSERT INTO incomes 
 		VALUES (NULL, :id, :category, :amount, :date, :comment)');
 		
@@ -103,18 +88,11 @@ if (isset($_POST['amount']))
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="js/auxiliaryFunctions.js"></script>
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
-		<style>
-		.error {
-		  font-size: 15px;
-		  color: red;
-		  margin-top: 10px;
-		  margin-bottom: 10px;
-		}
-		</style>
 	</head>	
 	<body>
 	
@@ -152,7 +130,7 @@ if (isset($_POST['amount']))
 			</div>
 		</nav>
 
-		<div class="container-fluid text-center my-2 p-2 bg-light" style="visibility:
+		<div class="alert alert-success text-center my-1" id="info" style="visibility:
 		<?php
 		if (isset($add_info))
 			echo 'visible';
@@ -177,9 +155,7 @@ if (isset($_POST['amount']))
 						</div>
 						<?php
 						if (isset($e_amount))
-						{
 							echo '<div class="error ml-5 pl-5">'.$e_amount.'</div>';	
-						}
 						?>
 						<div class="row pl-3 mt-3">
 							<div class="pl-3">
@@ -191,22 +167,17 @@ if (isset($_POST['amount']))
 						</div>
 						<?php
 						if (isset($e_date))
-						{
 							echo '<div class="error ml-5 pl-5">'.$e_date.'</div>';
-						}
 						?>		
 						<div class="px-3 mt-3">
 							<fieldset class="col shadow-xl rounded-xl">
 								<legend class="w-auto p-2"> Kategoria </legend>
 								<?php
-								foreach ($categories as $category)
-								{	
+								foreach ($categories as $category) {	
 									echo '<div><label><input type="radio" name="category" value="'.$category['id'].'"/> '.$category['name'].'</label></div>';	
 								}
 								if (isset($e_category))
-								{
 									echo '<div class="error">'.$e_category.'</div>';
-								}
 								?>	
 								<div class="mt-3"><label for="comment">Komentarz (opcjonalnie):</label></div> 
 								<textarea class="form-control col-lg-11 rounded-xl mb-3" id="comment" name="comment" rows="5"></textarea>
@@ -221,6 +192,18 @@ if (isset($_POST['amount']))
 				</div>
 			</div>
 		</div>
-		<script src="js/insertTodayDate.js"></script>
+		<script>
+		$('#date').val(getTodayDate);
+		
+		var info = $('#info').css('visibility');
+		if (info == "visible") {
+			setTimeout(function() {
+				$('#info').fadeOut(1000, function() {
+					$('#info').css('visibility', 'hidden');
+					$('#info').css('display','block');
+				});
+			}, 5000);
+		}
+		</script>
 	</body>
 </html>

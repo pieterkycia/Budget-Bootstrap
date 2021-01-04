@@ -1,14 +1,12 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_id']))
-{
+if (isset($_SESSION['user_id'])) {
 	header ('Location: menu.php');
 	exit();
 }
 
-if (isset($_POST['email']))
-{
+if (isset($_POST['email'])) {
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 	
@@ -21,10 +19,8 @@ if (isset($_POST['email']))
 	
 //**************************************************	
 	//Weryfikacja danych
-	foreach ($users as $user)
-	{
-		if (($user['email'] == $email) && ($user['password'] == $password))
-		{
+	foreach ($users as $user) {
+		if (($user['email'] == $email) && ($user['password'] == $password)) {
 			$_SESSION['user_id'] = $user['id'];
 			header ('Location: menu.php');
 			exit();
@@ -33,7 +29,6 @@ if (isset($_POST['email']))
 	$e_login = "Niepoprawny email lub hasło!";
 }
 ?>
-
 
 <!DOCTYPE HTML>
 <html lang="pl">
@@ -53,14 +48,6 @@ if (isset($_POST['email']))
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
-		<style>
-		.error {
-		  font-size: 15px;
-		  color: red;
-		  margin-top: 10px;
-		  margin-bottom: 10px;
-		}
-		</style>
 	</head>	
 	<body>
 	
@@ -103,9 +90,7 @@ if (isset($_POST['email']))
 							</div>
 							<?php
 							if (isset($e_login))
-							{
 								echo '<div class="error">'.$e_login.'</div>';
-							}
 							?>
 							<div class="text-center mt-4">
 								<input type="submit" class="btn btn-success" value="Zaloguj się"/>

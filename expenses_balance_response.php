@@ -1,17 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
-}
-else if (!isset($_POST['date1']))
-{
+} else if (!isset($_POST['date1'])) {
 	header('Location: menu.php');
 	exit();
-}
-else
-{
+} else {
 	require_once 'database.php';
 		
 	$query = $db->query('SELECT name, SUM(amount) AS amount 
@@ -28,9 +23,8 @@ else
 	$expenses = $query->fetchALL();
 	$rows = $query->rowCount();
 	if ($rows == 0)
-		echo "Brak wyników";
-	else
-	{	
+		echo "Brak wydatków!";
+	else {	
 		echo <<<EN
 		<table class="table table-striped table-bordered">
 			<thead>
@@ -41,8 +35,7 @@ else
 			</thead>
 			<tbody>
 EN;
-		foreach($expenses as $expense)
-		{
+		foreach($expenses as $expense) {
 			echo <<<EN
 			  <tr>
 				<td>{$expense['name']}</td>

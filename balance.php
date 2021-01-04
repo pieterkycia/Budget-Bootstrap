@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
 }
@@ -22,24 +21,17 @@ if (!isset($_SESSION['user_id']))
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="js/auxiliaryFunctions.js"></script>
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
-		<style>
-		.error {
-		  font-size: 15px;
-		  color: red;
-		  margin-top: 10px;
-		  margin-bottom: 10px;
-		}
-		</style>
 	</head>	
 	<body>
 	
 		<nav class="navbar navbar-expand-lg sticky-top shadow-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand" href="menu.html">
+				<a class="navbar-brand" href="menu.php">
 					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
 				</a>
 				
@@ -80,11 +72,11 @@ if (!isset($_SESSION['user_id']))
 							<label for="checkDate">Wybierz okres:</label>
 						</div>	
 						<div class="col-6 col-lg-4 col-xl-3">
-							<select id="checkDate" name="checkDate" class="form-control">
+							<select id="selectDate" name="selectDate" class="form-control">
 								<option value="1">Bieżący miesiąc</option>
 								<option value="2">Poprzedni miesiąc</option>
 								<option value="3">Bieżący rok</option>
-								<option value="4" data-target="#myModal">Niestandardowy</option>
+								<option value="4" data-toggle="modal" data-target="#myModal">Niestandardowy</option>
 							</select>	
 						</div>
 					</div>
@@ -103,7 +95,7 @@ if (!isset($_SESSION['user_id']))
 							</fieldset>
 						</div>
 					</div>	
-					<div class="row my-3 pt-3">
+					<div class="row my-3 pt-3" id="image">
 						<img class="img-fluid d-block mx-auto" src="img/wykres-kolowy.png" alt="wykres"/>
 					</div>
 				</div>
@@ -115,46 +107,51 @@ if (!isset($_SESSION['user_id']))
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title" id="myModalLabel">Tytuł okienka pop-up</h4>
-						<button type="button" class="close" data-dismiss="modal">&times;</button>					
+						<h4 class="modal-title" id="myModalLabel">Podaj okres do wyświetlenia</h4>
+						<button type="button" class="close btn-close" data-dismiss="modal">&times;</button>					
 					</div>
 					<div class="modal-body">
 						<div class="row mb-3">
 							<div class="pl-3 mt-1">
-								<label for="date">Data:</label>
+								<label for="date">Data od:</label>
 							</div>	
 							<div class="col-8">
-								<input type="date" id="date1" name="date1" class="form-control"/>
+								<input type="text" id="date1" name="date1" class="form-control"/>
 							</div>
 						</div>
 						
 						<div class="row">
 							<div class="pl-3 mt-1">
-								<label for="date">Data:</label>
+								<label for="date">Data do:</label>
 							</div>	
 							<div class="col-8">
-								<input type="date" id="date2" name="date2" class="form-control"/>
+								<input type="text" id="date2" name="date2" class="form-control"/>
 							</div>
 						</div>
-						<div class="pl-5 error" id="date-error"></div>
+						<div class="pl-5 ml-4 error" id="date-error"></div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" id="btn-show-balance">Pokaż</button>
-						<button type="button" class="btn btn-danger" data-dismiss="modal">Zamknij</button>
+						<button type="button" class="btn btn-danger btn-close" data-dismiss="modal">Zamknij</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script src="function.js" type="text/javascript"></script>
+		
 		<script>
+		
 		var date = new Date();
 		
 		showBalance(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
 		
-		$('#checkDate').change(function() {
+		$('.btn-close').click(function() {
+			$('#selectDate').val(1);
+			showBalance(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
+		});
+		
+		$('#selectDate').change(function() {
 			var dateOption = $(this).val();
-			switch(dateOption)
-			{
+			switch(dateOption) {
 				case '1': 
 					showBalance(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
 					break;
@@ -168,20 +165,15 @@ if (!isset($_SESSION['user_id']))
 					break;
 					
 				case '4':
-					$('#myModal').modal("show");
+					$('#myModal').modal({backdrop: 'static'},"show");
 					$('#btn-show-balance').click(function() {
 						var date1 = $('#date1').val();
 						var date2 = $('#date2').val();
-						
-						var checkDateFunction = true;
-						if (checkDateFunction == true)
-						{
-							showBalance(date1, date2);
-							$('#myModal').modal("hide");
-						}
-						else
-						$('#date-error').text('Niepoprawna data!');	
+						checkDates(date1, date2);
 					});
+					$('#date1').val('');
+					$('#date2').val('');
+					$('#date-error').text('');
 					break;
 			}					
 		});

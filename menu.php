@@ -1,14 +1,11 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
 }
 ?>
-
-
 
 <!DOCTYPE HTML>
 <html lang="pl">
