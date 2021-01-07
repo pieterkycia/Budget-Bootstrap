@@ -21,6 +21,7 @@ if (!isset($_SESSION['user_id'])) {
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		<script src="js/auxiliaryFunctions.js"></script>
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
@@ -94,9 +95,10 @@ if (!isset($_SESSION['user_id'])) {
 								<p id="expenses" style="font-size: 15px;"></p>
 							</fieldset>
 						</div>
+						<b id="sum" style="font-size: 15px;"></b>
 					</div>	
-					<div class="row my-3 pt-3" id="image">
-						<img class="img-fluid d-block mx-auto" src="img/wykres-kolowy.png" alt="wykres"/>
+					<div class="row my-3 pt-3" id="chart-parent">
+						<canvas id="chart" width="200" height="100"></canvas>
 					</div>
 				</div>
 			</div>
@@ -175,8 +177,10 @@ if (!isset($_SESSION['user_id'])) {
 					$('#date2').val('');
 					$('#date-error').text('');
 					break;
-			}					
+			}
 		});
+		
+		
 		</script>
 	</body>
 </html>

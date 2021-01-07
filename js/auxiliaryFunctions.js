@@ -29,6 +29,62 @@ function lastDayOfCurrentYear(date) {
 	return (date.getFullYear() + "-12-31");
 }
 
+function createChart(chartLabels, chartValues) {
+	new Chart($('#chart'), {
+		type: 'pie',
+		data: {
+			labels: chartLabels,
+			datasets: [{
+				data: chartValues,
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.5)',
+					'rgba(54, 162, 235, 0.5)',
+					'rgba(255, 206, 86, 0.5)',
+					'rgba(75, 192, 192, 0.5)',
+					'rgba(153, 102, 255, 0.5)',
+					'rgba(255, 159, 64, 0.5)'
+				],
+				borderColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			title: {
+				display: true,
+				text: 'Twoje wydatki',
+				fontSize: 20
+			}
+		}
+	});	
+}
+
+function showChart(date1, date2) {
+	$.post("chart_data_response.php", {date1: date1, date2: date2},function(data) {
+		var chartData = JSON.parse(data);
+		var chartLabels = [];
+		var chartValues = [];
+		
+		for (i in chartData) {
+			chartLabels.push(chartData[i].name);
+			chartValues.push(chartData[i].amount);
+		}
+		$('#chart').remove();
+		$('#chart-parent').append('<canvas id="chart" width="200" height="80"></canvas>');
+		if (chartData.length <= 0) {
+			chartLabels.push('Brak wydatków');
+			chartValues.push('100');
+		}
+		createChart(chartLabels, chartValues);
+	});
+}
+
 function showBalance(date1, date2) {
 	$.post("incomes_balance_response.php", {date1: date1, date2: date2},function(data) {
 		$("#incomes").html(data);	
@@ -36,6 +92,7 @@ function showBalance(date1, date2) {
 	$.post("expenses_balance_response.php", {date1: date1, date2: date2},function(data) {
 		$("#expenses").html(data);
 	});
+	showChart(date1, date2);
 }
 
 function checkDates(date1, date2) { 

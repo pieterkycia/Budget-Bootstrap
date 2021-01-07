@@ -22,6 +22,7 @@ if (!isset($_SESSION['user_id'])) {
 	
 	$incomes = $query->fetchALL();
 	$rows = $query->rowCount();
+	$_SESSION['incomesSum'] = 0;
 	if ($rows == 0)
 		echo "Brak przychodów!";
 	else {
@@ -42,10 +43,12 @@ EN;
 				<td>{$income['amount']}</td>
 			  </tr>
 EN;
+			$_SESSION['incomesSum'] += $income['amount'];
 		}
 		echo <<<EN
 			</tbody>
 		  </table>
+		  <b>Suma przychodów: {$_SESSION['incomesSum']}</b>
 EN;
 	}
 }
