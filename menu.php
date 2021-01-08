@@ -1,14 +1,11 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
 }
 ?>
-
-
 
 <!DOCTYPE HTML>
 <html lang="pl">
@@ -24,6 +21,8 @@ if (!isset($_SESSION['user_id']))
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<script src="js/auxiliaryFunctions.js"></script>
 		
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
@@ -68,15 +67,33 @@ if (!isset($_SESSION['user_id']))
 			<div class="row">
 				<div class="col-lg-10 mx-auto">
 					<div class="shadow-lg app-description p-3">
-						<h2>Ogólny przegląd wydatków z wykresem</h2>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed sagittis ligula. Aenean fermentum quam eu fringilla vehicula. Quisque ac arcu faucibus, scelerisque felis vel, sollicitudin tellus. Morbi nulla nibh, pretium non accumsan quis, rhoncus at nisl. Vestibulum nec iaculis orci. Sed tincidunt purus in turpis iaculis, eget porttitor mi viverra. Nulla elementum elit a placerat dictum. Aliquam vehicula tellus ac neque elementum, eu ornare erat auctor. Nulla fermentum dictum metus.</p>
-						
-						<div class="row my-5">
-							<img class="img-fluid d-block mx-auto" src="img/wykres-kolowy.png" alt="wykres"/>
+						<h2 class="text-center">Przegląd wydatków z tego miesiąca</h2>
+						<div class="row">
+							<div class="col-10 col-lg-8 mx-auto">
+								<fieldset class="shadow-xl rounded-xl pl-3 mt-3">
+									<h3 class="pt-3">Wydatki</h3>
+									<p id="expenses" style="font-size: 15px;"></p>
+								</fieldset>
+							</div>
 						</div>
+						<div class="row">
+							<div class="col mt-3" id="chart-parent">
+								<canvas id="chart" width="200" height="100"></canvas>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 			</div>
 		</div>
+		
+		<script>
+			var date = new Date();
+			$.post("expenses_balance_response.php", 
+			{date1: firstDayOfCurrentMonth(date), date2: lastDayOfCurrentMonth(date)},function(data) {
+				$("#expenses").html(data);
+				showChart(firstDayOfCurrentMonth(date), lastDayOfCurrentMonth(date));
+			});
+		</script>
 	</body>
 </html>

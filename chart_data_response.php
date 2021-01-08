@@ -22,34 +22,7 @@ if (!isset($_SESSION['user_id'])) {
 	
 	$expenses = $query->fetchALL();
 	$rows = $query->rowCount();
-	$_SESSION['expensesSum'] = 0;
-	if ($rows == 0)
-		echo "Brak wydatków!";
-	else {	
-		echo <<<EN
-		<table class="table table-striped table-bordered">
-			<thead>
-			  <tr>
-				<th>Expense</th>
-				<th>Amount</th>
-			  </tr>
-			</thead>
-			<tbody>
-EN;
-		foreach($expenses as $expense) {
-			echo <<<EN
-			  <tr>
-				<td>{$expense['name']}</td>
-				<td>{$expense['amount']}</td>
-			  </tr>
-EN;
-			$_SESSION['expensesSum'] += $expense['amount'];
-		}
-		echo <<<EN
-			</tbody>
-		  </table>
-		  <b>Suma wydatków: {$_SESSION['expensesSum']}</b>
-EN;
-	}
+	
+	echo json_encode($expenses);
 }
 ?>

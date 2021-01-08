@@ -20,7 +20,7 @@
 	
 		<nav class="navbar navbar-expand-lg sticky-top shadow-lg navbar-light">
 			<div class="container">
-				<a class="navbar-brand" href="menu.html">
+				<a class="navbar-brand" href="menu.php">
 					<i class="icon-money-1" style="color: green;"><strong>Budżet.pl</strong></i>
 				</a>
 				
@@ -31,21 +31,21 @@
 				<div class="collapse navbar-collapse" id="menu">
 					<ul class="navbar-nav pl-lg-5">
 						<li class="nav-item px-2">
-							<a class="nav-link" href="incomes.html"><b>Dodaj przychód</b></a>
+							<a class="nav-link" href="incomes.php"><b>Dodaj przychód</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="expenses.html"><b>Dodaj wydatek</b></a>
+							<a class="nav-link" href="expenses.php"><b>Dodaj wydatek</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link" href="balance.html"><b>Przeglądaj bilans</b></a>
+							<a class="nav-link" href="balance.php"><b>Przeglądaj bilans</b></a>
 						</li>
 						<li class="nav-item px-2">
-							<a class="nav-link active" href="settings.html"><b>Ustawienia</b></a>
+							<a class="nav-link active" href="settings.php"><b>Ustawienia</b></a>
 						</li>
 					</ul>	
 					<ul class="navbar-nav ml-auto">	
 						<li class="nav-item pl-2 pl-lg-0">
-							<a class="nav-link" href="register.html"><b>Wyloguj się</b></a>
+							<a class="nav-link" href="logout.php"><b>Wyloguj się</b></a>
 						</li>
 					</ul>
 				</div>

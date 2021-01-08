@@ -1,17 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
 	header('Location: register.php');
 	exit();
-}
-else if (!isset($_POST['date1']))
-{
+} else if (!isset($_POST['date1'])) {
 	header('Location: menu.php');
 	exit();
-}
-else
-{
+} else {
 	require_once 'database.php';
 		
 	$query = $db->query('SELECT name, SUM(amount) AS amount 
@@ -27,10 +22,10 @@ else
 	
 	$incomes = $query->fetchALL();
 	$rows = $query->rowCount();
+	$_SESSION['incomesSum'] = 0;
 	if ($rows == 0)
-		echo "Brak wyników";
-	else
-	{
+		echo "Brak przychodów!";
+	else {
 		echo <<<EN
 		<table class="table table-striped table-bordered">
 			<thead>
@@ -41,18 +36,19 @@ else
 			</thead>
 			<tbody>
 EN;
-		foreach($incomes as $income)
-		{
+		foreach($incomes as $income) {
 			echo <<<EN
 			  <tr>
 				<td>{$income['name']}</td>
 				<td>{$income['amount']}</td>
 			  </tr>
 EN;
+			$_SESSION['incomesSum'] += $income['amount'];
 		}
 		echo <<<EN
 			</tbody>
 		  </table>
+		  <b>Suma przychodów: {$_SESSION['incomesSum']}</b>
 EN;
 	}
 }

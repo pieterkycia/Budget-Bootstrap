@@ -1,27 +1,23 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_id']))
-{
+if (isset($_SESSION['user_id'])) {
 	header ('Location: menu.php');
 	exit();
 }
 
-if (isset($_POST['name']))
-{
+if (isset($_POST['name'])) {
 	$is_OK = true;
 	
 //**************************************************		
 	//Sprawdź poprawność imienia
 	$name = $_POST['name'];
 	$name = ucwords($name);
-	if (ctype_alpha($name) == false)
-	{
+	if (ctype_alpha($name) == false) {
 		$is_OK = false;
 		$e_name = "Imię może składać się tylko z liter!";
 	}
-	if (strlen($name) < 3)
-	{
+	if (strlen($name) < 3) {
 		$is_OK = false;
 		$e_name = "Imię musi posiadać co najmniej 3 znaki!";
 	}
@@ -31,8 +27,7 @@ if (isset($_POST['name']))
 	$email = $_POST['email'];
 	$emailB = filter_var($email, FILTER_SANITIZE_EMAIL);
 	
-	if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email))
-	{
+	if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email)) {
 		$is_OK = false;
 		$e_email = "Podaj poprawny adres e-mail!";
 	}
@@ -41,30 +36,25 @@ if (isset($_POST['name']))
 	//Sprawdź poprawność hasła	
 	$password = $_POST['password'];
 	$password_2 = $_POST['repeat_password'];
-	if (strlen($password) < 8)
-	{
+	if (strlen($password) < 8) {
 		$is_OK = false;
 		$e_password = "Hasło musi zawierać co najmniej 8 znaków!";
 	}
-	if ($password != $password_2)
-	{
+	if ($password != $password_2) {
 		$is_OK = false;
 		$e_password = "Oba hasła muszą być identyczne!";
 	}
 	
 //**************************************************		
 	//Nawiązanie połączenia z bazą i pobranie emaili	
-	if ($is_OK == true)
-	{
+	if ($is_OK == true) {
 		require_once 'database.php';
 		
 		$query = $db->query('SELECT email FROM users');
 		$users = $query->fetchAll();
 		
-		foreach($users as $emails)
-		{	
-			if ($emails['email'] == $email)
-			{
+		foreach($users as $emails) {	
+			if ($emails['email'] == $email) {
 				$is_OK = false;
 				$e_email = "Podany adres email już istnieje!";
 			}
@@ -72,8 +62,7 @@ if (isset($_POST['name']))
 		
 //**************************************************				
 	//Dodawanie nowego uzytkownika do bazy		
-		if ($is_OK == true)
-		{
+		if ($is_OK == true) {
 			$query = $db->prepare('INSERT INTO users VALUES (NULL, :name, :password, :email)');
 			$query->bindValue(':name', $name, PDO::PARAM_STR);
 			$query->bindValue(':password', $password, PDO::PARAM_STR);
@@ -90,8 +79,7 @@ if (isset($_POST['name']))
 			$incomes_query = $db->query('SELECT name FROM incomes_category_default');
 			$incomes = $incomes_query->fetchALL();
 			
-			foreach($incomes as $category)
-			{	
+			foreach($incomes as $category) {	
 				$query = $db->query('INSERT INTO incomes_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
 			}
 
@@ -100,8 +88,7 @@ if (isset($_POST['name']))
 			$expenses_query = $db->query('SELECT name FROM expenses_category_default');
 			$expenses = $expenses_query->fetchALL();
 			
-			foreach($expenses as $category)
-			{	
+			foreach($expenses as $category) {	
 				$query = $db->query('INSERT INTO expenses_category_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
 			}
 
@@ -110,8 +97,7 @@ if (isset($_POST['name']))
 			$payment_query = $db->query('SELECT name FROM payment_methods_default');
 			$payment = $payment_query->fetchALL();
 			
-			foreach($payment as $category)
-			{	
+			foreach($payment as $category) {	
 				$query = $db->query('INSERT INTO payment_methods_assigned_to_users VALUES (NULL, '.$register_id['id'].', "'.$category['name'].'")');
 			}
 		}
@@ -137,14 +123,6 @@ if (isset($_POST['name']))
 		<link href = "css/main.css" rel = "stylesheet" type = "text/css"/>
 		<link href = "css/fontello.css" rel = "stylesheet" type = "text/css"/>
 		
-		<style>
-		.error {
-		  font-size: 15px;
-		  color: red;
-		  margin-top: 10px;
-		  margin-bottom: 10px;
-		}
-		</style>
 	</head>	
 	<body>
 	
@@ -190,9 +168,7 @@ if (isset($_POST['name']))
 							</div>
 							<?php
 							if (isset($e_name))
-							{
 								echo '<div class="error">'.$e_name.'</div>';
-							}
 							?>
 							<div class="form-group">
 								<label for="email" class="sr-only">Email</label>
@@ -200,9 +176,7 @@ if (isset($_POST['name']))
 							</div>
 							<?php
 							if (isset($e_email))
-							{
 								echo '<div class="error">'.$e_email.'</div>';
-							}
 							?>
 							<div class="form-group">
 								<label for="password" class="sr-only">Password</label>
@@ -210,9 +184,7 @@ if (isset($_POST['name']))
 							</div>
 							<?php
 							if (isset($e_password))
-							{
 								echo '<div class="error">'.$e_password.'</div>';
-							}
 							?>
 							<div class="form-group">
 								<label for="repeat-password" class="sr-only">Password</label>
