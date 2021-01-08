@@ -95,7 +95,6 @@ if (!isset($_SESSION['user_id'])) {
 								<p id="expenses" style="font-size: 15px;"></p>
 							</fieldset>
 						</div>
-						<b id="sum" style="font-size: 15px;"></b>
 					</div>	
 					<div class="row my-3 pt-3" id="chart-parent">
 						<canvas id="chart" width="200" height="100"></canvas>
